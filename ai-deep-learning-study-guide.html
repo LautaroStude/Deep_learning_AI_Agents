@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Deep Learning to AI Agents — Study Guide 2026</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
+
+  :root {
+    --bg: #0a0a0f;
+    --surface: #12121a;
+    --surface2: #1a1a28;
+    --surface3: #222236;
+    --border: #2a2a40;
+    --text: #e8e8f0;
+    --text-dim: #9090aa;
+    --text-muted: #606078;
+    --accent: #7c5cfc;
+    --accent-light: #9b80ff;
+    --accent-bg: rgba(124, 92, 252, 0.08);
+    --green: #34d399;
+    --green-bg: rgba(52, 211, 153, 0.08);
+    --orange: #fb923c;
+    --orange-bg: rgba(251, 146, 60, 0.08);
+    --red: #f87171;
+    --red-bg: rgba(248, 113, 113, 0.08);
+    --blue: #60a5fa;
+    --blue-bg: rgba(96, 165, 250, 0.08);
+    --cyan: #22d3ee;
+    --cyan-bg: rgba(34, 211, 238, 0.08);
+    --pink: #f472b6;
+    --pink-bg: rgba(244, 114, 182, 0.08);
+    --radius: 12px;
+    --radius-sm: 8px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    min-height: 100vh;
+  }
+
+  /* ---- HERO ---- */
+  .hero {
+    position: relative;
+    padding: 80px 24px 60px;
+    text-align: center;
+    overflow: hidden;
+    border-bottom: 1px solid var(--border);
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -200px; left: 50%; transform: translateX(-50%);
+    width: 800px; height: 800px;
+    background: radial-gradient(circle, rgba(124,92,252,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-badge {
+    display: inline-block;
+    padding: 6px 16px;
+    border-radius: 20px;
+    background: var(--accent-bg);
+    border: 1px solid rgba(124,92,252,0.2);
+    color: var(--accent-light);
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    margin-bottom: 20px;
+  }
+  .hero h1 {
+    font-size: clamp(32px, 5vw, 56px);
+    font-weight: 800;
+    line-height: 1.15;
+    letter-spacing: -1.5px;
+    margin-bottom: 16px;
+    background: linear-gradient(135deg, #fff 0%, var(--accent-light) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .hero p {
+    color: var(--text-dim);
+    font-size: 18px;
+    max-width: 600px;
+    margin: 0 auto 32px;
+  }
+
+  /* ---- TIMELINE TOGGLE ---- */
+  .toggle-wrap {
+    display: flex;
+    justify-content: center;
+    gap: 0;
+    margin-bottom: 0;
+  }
+  .toggle-btn {
+    padding: 10px 28px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text-dim);
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.25s;
+  }
+  .toggle-btn:first-child { border-radius: 8px 0 0 8px; }
+  .toggle-btn:last-child { border-radius: 0 8px 8px 0; }
+  .toggle-btn.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+  }
+
+  /* ---- LAYOUT ---- */
+  .container {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 48px 24px 80px;
+  }
+
+  /* ---- PHASE BLOCKS ---- */
+  .phase {
+    position: relative;
+    margin-bottom: 48px;
+    padding-left: 32px;
+  }
+  .phase::before {
+    content: '';
+    position: absolute;
+    left: 7px; top: 0; bottom: -48px;
+    width: 2px;
+    background: linear-gradient(to bottom, var(--border), transparent);
+  }
+  .phase:last-child::before { bottom: 0; }
+  .phase-dot {
+    position: absolute;
+    left: 0; top: 4px;
+    width: 16px; height: 16px;
+    border-radius: 50%;
+    border: 3px solid var(--accent);
+    background: var(--bg);
+  }
+  .phase[data-color="green"] .phase-dot { border-color: var(--green); }
+  .phase[data-color="orange"] .phase-dot { border-color: var(--orange); }
+  .phase[data-color="red"] .phase-dot { border-color: var(--red); }
+  .phase[data-color="blue"] .phase-dot { border-color: var(--blue); }
+  .phase[data-color="cyan"] .phase-dot { border-color: var(--cyan); }
+  .phase[data-color="pink"] .phase-dot { border-color: var(--pink); }
+
+  .phase-header {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    margin-bottom: 6px;
+    flex-wrap: wrap;
+  }
+  .phase-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--accent-light);
+    padding: 3px 10px;
+    border-radius: 4px;
+    background: var(--accent-bg);
+  }
+  .phase[data-color="green"] .phase-label { color: var(--green); background: var(--green-bg); }
+  .phase[data-color="orange"] .phase-label { color: var(--orange); background: var(--orange-bg); }
+  .phase[data-color="red"] .phase-label { color: var(--red); background: var(--red-bg); }
+  .phase[data-color="blue"] .phase-label { color: var(--blue); background: var(--blue-bg); }
+  .phase[data-color="cyan"] .phase-label { color: var(--cyan); background: var(--cyan-bg); }
+  .phase[data-color="pink"] .phase-label { color: var(--pink); background: var(--pink-bg); }
+
+  .phase-title {
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+  }
+  .phase-timeline {
+    font-size: 13px;
+    color: var(--text-muted);
+    font-weight: 500;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .phase-desc {
+    color: var(--text-dim);
+    margin-bottom: 20px;
+    font-size: 15px;
+  }
+
+  /* ---- RESOURCE CARDS ---- */
+  .resources {
+    display: grid;
+    gap: 12px;
+  }
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    transition: all 0.25s;
+  }
+  .card:hover {
+    border-color: rgba(124,92,252,0.3);
+    background: var(--surface2);
+    transform: translateY(-1px);
+  }
+  .card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 8px;
+  }
+  .card-title {
+    font-size: 16px;
+    font-weight: 600;
+  }
+  .card-title a {
+    color: var(--text);
+    text-decoration: none;
+    border-bottom: 1px dashed rgba(255,255,255,0.15);
+    transition: color 0.2s;
+  }
+  .card-title a:hover {
+    color: var(--accent-light);
+    border-color: var(--accent-light);
+  }
+  .card-meta {
+    display: flex;
+    gap: 8px;
+    flex-shrink: 0;
+    flex-wrap: wrap;
+  }
+  .tag {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 4px;
+    letter-spacing: 0.3px;
+    white-space: nowrap;
+  }
+  .tag-free { background: var(--green-bg); color: var(--green); }
+  .tag-paid { background: var(--orange-bg); color: var(--orange); }
+  .tag-video { background: var(--blue-bg); color: var(--blue); }
+  .tag-book { background: var(--pink-bg); color: var(--pink); }
+  .tag-project { background: var(--cyan-bg); color: var(--cyan); }
+  .tag-interactive { background: var(--accent-bg); color: var(--accent-light); }
+
+  .card-desc {
+    color: var(--text-dim);
+    font-size: 14px;
+    line-height: 1.6;
+  }
+  .card-instructor {
+    margin-top: 8px;
+    font-size: 12px;
+    color: var(--text-muted);
+    font-weight: 500;
+  }
+
+  /* ---- MILESTONE BOXES ---- */
+  .milestone {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    border-radius: var(--radius-sm);
+    padding: 16px 20px;
+    margin-top: 16px;
+  }
+  .milestone-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--accent-light);
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+  }
+  .milestone p {
+    color: var(--text-dim);
+    font-size: 14px;
+  }
+
+  /* ---- TIPS SECTION ---- */
+  .tips-section {
+    margin-top: 48px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 32px;
+  }
+  .tips-section h2 {
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 20px;
+    letter-spacing: -0.3px;
+  }
+  .tip-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 16px;
+  }
+  .tip-card {
+    padding: 16px;
+    background: var(--surface2);
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+  }
+  .tip-card h3 {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 6px;
+    color: var(--text);
+  }
+  .tip-card p {
+    font-size: 13px;
+    color: var(--text-dim);
+    line-height: 1.6;
+  }
+
+  /* ---- FOOTER ---- */
+  .footer {
+    text-align: center;
+    padding: 32px 24px;
+    color: var(--text-muted);
+    font-size: 13px;
+    border-top: 1px solid var(--border);
+  }
+
+  /* ---- RESPONSIVE ---- */
+  @media (max-width: 600px) {
+    .hero { padding: 48px 16px 40px; }
+    .container { padding: 32px 16px 60px; }
+    .phase { padding-left: 24px; }
+    .card { padding: 16px; }
+    .tips-section { padding: 20px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-badge">2026 Edition</div>
+  <h1>Deep Learning to AI Agents<br>Study Guide</h1>
+  <p>A phased learning path from neural network fundamentals to building autonomous AI agents and multi-agent systems.</p>
+  <div class="toggle-wrap">
+    <button class="toggle-btn active" onclick="setTimeline('fast')">3–6 Months (Intensive)</button>
+    <button class="toggle-btn" onclick="setTimeline('steady')">6–12 Months (Steady)</button>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- ============================================ -->
+  <!-- PHASE 1 -->
+  <!-- ============================================ -->
+  <div class="phase" data-color="green">
+    <div class="phase-dot"></div>
+    <div class="phase-header">
+      <span class="phase-label">Phase 1</span>
+      <span class="phase-title">Foundations of Deep Learning</span>
+      <span class="phase-timeline timeline-fast">Weeks 1–4</span>
+      <span class="phase-timeline timeline-steady" style="display:none">Weeks 1–8</span>
+    </div>
+    <p class="phase-desc">Build rock-solid intuitions for how neural networks learn. Focus on the math (just enough), backpropagation, and getting comfortable with PyTorch.</p>
+
+    <div class="resources">
+      <div class="card">
+        <div class="card-top">
+          <div class="card-title"><a href="https://www.deeplearning.ai/courses/deep-learning-specialization/" target="_blank">Deep Learning Specialization</a></div>
+          <div class="card-meta"><span class="tag tag-free">FREE AUDIT</span><span class="tag tag-video">VIDEO</span></div>
+        </div>
+        <div class="card-desc">5-course sequence on Coursera. Start here for a structured walkthrough of neural nets, optimization, CNNs, RNNs, and sequence models. Andrew Ng's explanations of the intuition behind gradient descent and regularization are unmatched.</div>
+        <div class="card-instructor">Andrew Ng — DeepLearning.AI / Coursera</div>
+      </div>
+
+      <div class="card">
+        <div class="card-top">
+          <div class="card-title"><a href="https://course.fast.ai/" target="_blank">Practical Deep Learning for Coders</a></div>
+          <div class="card-meta"><span class="tag tag-free">FREE</span><span class="tag tag-project">HANDS-ON</span></div>
+        </div>
+        <div class="card-desc">Jeremy Howard's legendary top-down course. You'll train real models from lesson 1, then peel back the layers. The perfect complement to Ng's theory-first approach. Uses PyTorch & the fastai library.</div>
+        <div class="card-instructor">Jeremy Howard — fast.ai</div>
+      </div>
+
+      <div class="card">
+        <div class="card-top">
+          <div class="card-title"><a href="https://karpathy.ai/zero-to-hero.html" target="_blank">Neural Networks: Zero to Hero</a></div>
+          <div class="card-meta"><span class="tag tag-free">FREE</span><span class="tag tag-video">YOUTUBE</span></div>
+        </div>
+        <div class="card-desc">Andrej Karpathy builds everything from scratch in Python — micrograd, makemore (bigrams → MLPs → WaveNet), then a full GPT. The best "learn by building" resource on the internet. 8 lectures, code along with every one.</div>
+        <div class="card-instructor">Andrej Karpathy</div>
+      </div>
+
+      <div class="card">
+        <div class="card-top">
+          <div class="card-title"><a href="https://www.3blue1brown.com/topics/neural-networks" target="_blank">3Blue1Brown — Neural Networks</a></div>
+          <div class="card-meta"><span class="tag tag-free">FREE</span><span class="tag tag-video">VISUAL</span></div>
+        </div>
+        <div class="card-desc">Grant Sanderson's animated explanations of backpropagation and gradient descent. Watch these whenever a concept from the other courses feels fuzzy — the visualizations make everything click.</div>
+        <div class="card-instructor">Grant Sanderson — 3Blue1Brown</div>
+      </div>
+    </div>
+
+    <div class="milestone">
+      <div class="milestone-title">Milestone Project</div>
+      <p>Train an image classifier on a custom dataset (e.g., dog breeds or plant diseases) using PyTorch. Deploy it as a simple web app with Gradio or Streamlit. You should be able to explain backpropagation on a whiteboard.</p>
+    </div>
+  </div>
+
+  <!-- ============================================ -->
+  <!-- PHASE 2 -->
+  <!-- ============================================ -->
+  <div class="phase" data-color="blue">
+    <div class="phase-dot"></div>
+    <div class="phase-header">
+      <span class="phase-label">Phase 2</span>
+      <span class="phase-title">LLMs, Transformers & NLP</span>
+      <span class="phase-timeline timeline-fast">Weeks 5–8</span>
+      <span class="phase-timeline timeline-steady" style="display:none">Weeks 9–18</span>
+    </div>
+    <p class="phase-desc">Understand the transformer architecture that powers everything in modern AI — from GPT to diffusion models. Learn how LLMs are trained, fine-tuned, and deployed.</p>
+
+    <div class="resources">
+      <div class="card">
+        <div class="card-top">
+          <div class="card-title"><a href="https://karpathy.ai/zero-to-hero.html" target="_blank">Karpathy: Let's Build GPT</a></div>
+          <div class="card-meta"><span class="tag tag-free">FREE</span><span class="tag tag-project">BUILD</span></div>
+        </div>
+        <div class="card-desc">Lectures 7 & 8 from Zero to Hero. Build a GPT from scratch following "Attention is All You Need," then build the BPE tokenizer. This is where everything from Phase 1 pays off.</div>
+        <div class="card-instructor">Andrej Karpathy</div>
+      </div>
+
+      <div class="card">
+        <div class="card-top">
+          <div class="card-title"><a href="https://web.stanford.edu/class/cs224n/" target="_blank">Stanford CS224N — NLP with Deep Learning</a></div>
+          <div class="card-meta"><span class="tag tag-free">FREE</span><span class="tag tag-video">LECTURES</span></div>
+        </div>
+        <div class="card-desc">Stanford's flagship NLP course. Full lecture videos, slides, and assignments available free online. Covers word vectors, dependency parsing, transformers, pretraining, and more. Academic rigor meets real-world applications.</div>
+        <div class="card-instructor">Chris Manning — Stanford</div>
+      </div>
+
+      <div class="card">
+        <div class="card-top">
+          <div class="card-title"><a href="https://www.youtube.com/watch?v=7xTGNNLPyMI" target="_blank">Karpathy: Deep Dive into LLMs</a></div>
+          <div class="card-meta"><span class="tag tag-free">FREE</span><span class="tag tag-video">YOUTUBE</span></div>
+        </div>
+        <div class="card-desc">A 3.5-hour deep dive into how LLMs like ChatGPT actually work under the hood — pretraining, RLHF, tokenization, sampling, and the full training pipeline. Essential context before you start building with LLM APIs.</div>
+        <div class="card-instructor">Andrej Karpathy</div>
+      </div>
+
+      <div class="card">
+        <div class="card-top">
+          <div class="card-title"><a href="https://huggingface.co/learn/nlp-course" target="_blank">Hugging Face NLP Course</a></div>
+          <div class="card-meta"><span class="tag tag-free">FREE</span><span class="tag tag-interactive">INTERACTIVE</span></div>
+        </div>
+        <div class="card-desc">Learn how to use the Transformers library, tokenizers, fine-tuning, and the Hugging Face ecosystem. This is where you go from "understanding transformers" to "actually using them in production."</div>
+        <div class="card-instructor">Hugging Face Team</div>
+      </div>
+
+      <div class="card">
+        <div class="card-top">
+          <div class="card-title"><a href="https://www.deeplearning.ai/short-courses/chatgpt-prompt-engineering-for-developers/" target="_blank">Prompt Engineering for Developers</a></div>
+          <div class="card-meta"><span class="tag tag-free">FREE</span><span class="tag tag-interactive">SHORT</span></div>
+        </div>
+        <div class="card-desc">DeepLearning.AI short course on working effectively with LLM APIs — system prompts, few-shot patterns, chain-of-thought, and structured outputs. A must before moving to agents.</div>
+        <div class="card-instructor">Isa Fulford & Andrew Ng — OpenAI / DeepLearning.AI</div>
+      </div>
+    </div>
+
+    <div class="milestone">
+      <div class="milestone-title">Milestone Project</div>
+      <p>Fine-tune a small language model (e.g., GPT-2 or a 7B open-source model) on a custom dataset using Hugging Face. Build a RAG (Retrieval-Augmented Generation) chatbot that can answer questions about a set of PDFs.</p>
+    </div>
+  </div>
+
+  <!-- ============================================ -->
+  <!-- PHASE 3 -->
+  <!-- ============================================ -->
+  <div class="phase" data-color="orange">
+    <div class="phase-dot"></div>
+    <div class="phase-header">
+      <span class="phase-label">Phase 3</span>
+      <span class="phase-title">AI Agents — Single Agent Systems</span>
+      <span class="phase-timeline timeline-fast">Weeks 9–12</span>
+      <span class="phase-timeline timeline-steady" style="display:none">Weeks 19–28</span>
+    </div>
+    <p class="phase-desc">Move from calling LLM APIs to building autonomous agents that use tools, maintain memory, make decisions, and take actions in the real world.</p>
+
+    <div class="resources">
+      <div class="card">
+        <div class="card-top">
+          <div class="card-title"><a href="https://www.deeplearning.ai/short-courses/ai-agents-in-langgraph/" target="_blank">AI Agents in LangGraph</a></div>
+          <div class="card-meta"><span class="tag tag-free">FREE</span><span class="tag tag-project">HANDS-ON</span></div>
+        </div>
+        <div class="card-desc">Build an agent from scratch in Python, then rebuild it properly using LangGraph's stateful graph-based orchestration. Covers tool use, memory, branching, and human-in-the-loop patterns.</div>
+        <div class="card-instructor">Harrison Chase & Rotem Weiss — LangChain / DeepLearning.AI</div>
+      </div>
+
+      <div class="card">
+        <div class="card-top">
+          <div class="card-title"><a href="https://www.deeplearning.ai/short-courses/functions-tools-agents-langchain/" target="_blank">Functions, Tools & Agents with LangChain</a></div>
+          <div class="card-meta"><span class="tag tag-free">FREE</span><span class="tag tag-interactive">SHORT</span></div>
+        </div>
+        <div class="card-desc">Learn how to give LLMs the ability to call functions, use tools (search, code execution, APIs), and act as autonomous agents. The bridge from "chatbot" to "agent."</div>
+        <div class="card-instructor">Harrison Chase — LangChain / DeepLearning.AI</div>
+      </div>
+
+      <div class="card">
+        <div class="card-top">
+          <div class="card-title"><a href="https://academy.langchain.com/" target="_blank">LangChain Academy</a></div>
+          <div class="card-meta"><span class="tag tag-free">FREE</span><span class="tag tag-interactive">COURSES</span></div>
+        </div>
+        <div class="card-desc">Official LangChain learning platform with structured courses on LangGraph, tool use, RAG, and agent architectures. Updated regularly with the latest patterns and best practices for building production agents.</div>
+        <div class="card-instructor">LangChain Team</div>
+      </div>
+
+      <div class="card">
+        <div class="card-top">
+          <div class="card-title"><a href="https://www.codecademy.com/article/top-ai-agent-frameworks-in-2025" target="_blank">AI Agent Frameworks Overview</a></div>
+          <div class="card-meta"><span class="tag tag-free">FREE</span><span class="tag tag-book">REFERENCE</span></div>
+        </div>
+        <div class="card-desc">Codecademy's guide to the landscape of agent frameworks — LangChain, CrewAI, AutoGen, and more. Read this to understand the ecosystem before committing to one framework.</div>
+        <div class="card-instructor">Codecademy</div>
+      </div>
+    </div>
+
+    <div class="milestone">
+      <div class="milestone-title">Milestone Project</div>
+      <p>Build a research agent that can search the web, read documents, and produce a structured report. It should plan its own steps, use tools, and handle errors gracefully. Use LangGraph or the OpenAI Agents SDK.</p>
+    </div>
+  </div>
+
+  <!-- ============================================ -->
+  <!-- PHASE 4 -->
+  <!-- ============================================ -->
+  <div class="phase" data-color="red">
+    <div class="phase-dot"></div>
+    <div class="phase-header">
+      <span class="phase-label">Phase 4</span>
+      <span class="phase-title">Multi-Agent Systems & Frameworks</span>
+      <span class="phase-timeline timeline-fast">Weeks 13–18</span>
+      <span class="phase-timeline timeline-steady" style="display:none">Weeks 29–38</span>
+    </div>
+    <p class="phase-desc">Scale from a single agent to teams of specialized agents that collaborate, delegate, and solve complex problems together.</p>
+
+    <div class="resources">
+      <div class="card">
+        <div class="card-top">
+          <div class="card-title"><a href="https://www.deeplearning.ai/short-courses/multi-ai-agent-systems-with-crewai/" target="_blank">Multi-AI Agent Systems with CrewAI</a></div>
+          <div class="card-meta"><span class="tag tag-free">FREE</span><span class="tag tag-project">HANDS-ON</span></div>
+        </div>
+        <div class="card-desc">Build role-based multi-agent crews where each agent has specific goals, backstories, and tools. Learn task delegation, sequential & parallel execution, and agent collaboration patterns. CrewAI is the most intuitive entry point for multi-agent thinking.</div>
+        <div class="card-instructor">Jo&atilde;o Moura — CrewAI / DeepLearning.AI</div>
+      </div>
+
+      <div class="card">
+        <div class="card-top">
+          <div class="card-title"><a href="https://microsoft.github.io/autogen/" target="_blank">AutoGen (Microsoft)</a></div>
+          <div class="card-meta"><span class="tag tag-free">FREE</span><span class="tag tag-project">FRAMEWORK</span></div>
+        </div>
+        <div class="card-desc">Microsoft's framework for event-driven multi-agent conversations. Supports async agents, human-in-the-loop, and enterprise-grade scalability. Study the docs and build the tutorial examples — especially the "conversable agent" patterns.</div>
+        <div class="card-instructor">Microsoft Research</div>
+      </div>
+
+      <div class="card">
+        <div class="card-top">
+          <div class="card-title"><a href="https://www.udemy.com/course/the-complete-agentic-ai-engineering-course/" target="_blank">Complete Agentic AI Engineering Course</a></div>
+          <div class="card-meta"><span class="tag tag-paid">PAID</span><span class="tag tag-project">8 PROJECTS</span></div>
+        </div>
+        <div class="card-desc">Intensive 6-week Udemy course covering OpenAI Agents SDK, CrewAI, LangGraph, and AutoGen all in one program. Each week focuses on a different framework with real-world projects. Great for comparing frameworks head-to-head.</div>
+        <div class="card-instructor">Udemy</div>
+      </div>
+
+      <div class="card">
+        <div class="card-top">
+          <div class="card-title"><a href="https://arsum.com/blog/posts/ai-agent-frameworks/" target="_blank">AI Agent Frameworks Compared (2026)</a></div>
+          <div class="card-meta"><span class="tag tag-free">FREE</span><span class="tag tag-book">REFERENCE</span></div>
+        </div>
+        <div class="card-desc">Comprehensive comparison of 12+ agent frameworks — LangChain, CrewAI, AutoGen, MetaGPT, OpenDevin, and more. Covers architecture patterns, trade-offs, and when to use what. Bookmark this for reference.</div>
+        <div class="card-instructor">Arsum</div>
+      </div>
+    </div>
+
+    <div class="milestone">
+      <div class="milestone-title">Milestone Project</div>
+      <p>Build a multi-agent "development team" — a planner agent, coder agent, reviewer agent, and tester agent that collaborate to build small applications from a natural language spec. Use CrewAI or AutoGen.</p>
+    </div>
+  </div>
+
+  <!-- ============================================ -->
+  <!-- PHASE 5 -->
+  <!-- ============================================ -->
+  <div class="phase" data-color="cyan">
+    <div class="phase-dot"></div>
+    <div class="phase-header">
+      <span class="phase-label">Phase 5</span>
+      <span class="phase-title">OpenClaw, AutoResearch & The Frontier</span>
+      <span class="phase-timeline timeline-fast">Weeks 19–24</span>
+      <span class="phase-timeline timeline-steady" style="display:none">Weeks 39–48</span>
+    </div>
+    <p class="phase-desc">Explore the cutting edge — open-source agentic frameworks running locally, autonomous research pipelines, and the tools shaping the future of AI engineering.</p>
+
+    <div class="resources">
+      <div class="card">
+        <div class="card-top">
+          <div class="card-title"><a href="https://en.wikipedia.org/wiki/OpenClaw" target="_blank">OpenClaw — Open-Source AI Agent Framework</a></div>
+          <div class="card-meta"><span class="tag tag-free">FREE / OSS</span><span class="tag tag-project">LOCAL</span></div>
+        </div>
+        <div class="card-desc">The most-starred open-source project on GitHub (280K+ stars). A personal AI agent that runs locally, remembers context across sessions, and integrates via Signal/Telegram/Discord. Study the architecture, build custom "skills" for ClawHub, and understand the MCP (Model Context Protocol) integration. Bring your own API key — no subscription needed.</div>
+        <div class="card-instructor">Peter Steinberger / Community</div>
+      </div>
+
+      <div class="card">
+        <div class="card-top">
+          <div class="card-title"><a href="https://github.com/aiming-lab/AutoResearchClaw" target="_blank">AutoResearch & AutoResearchClaw</a></div>
+          <div class="card-meta"><span class="tag tag-free">FREE / OSS</span><span class="tag tag-project">RESEARCH</span></div>
+        </div>
+        <div class="card-desc">Andrej Karpathy's AutoResearch is a 630-line Python framework that lets AI agents run hundreds of ML experiments autonomously on a single GPU. AutoResearchClaw integrates it with OpenClaw — "Chat an Idea. Get a Paper." Study the pipeline, run it, then extend it with your own research ideas.</div>
+        <div class="card-instructor">Andrej Karpathy / aiming-lab</div>
+      </div>
+
+      <div class="card">
+        <div class="card-top">
+          <div class="card-title"><a href="https://docs.anthropic.com/en/docs/agents-and-tools/tool-use" target="_blank">Anthropic MCP & Claude Agent SDK</a></div>
+          <div class="card-meta"><span class="tag tag-free">FREE DOCS</span><span class="tag tag-interactive">PROTOCOL</span></div>
+        </div>
+        <div class="card-desc">Model Context Protocol (MCP) is becoming the standard for how agents connect to external tools and data. Study the spec, build MCP servers, and understand how Claude's agent architecture works. This is the infrastructure layer that makes OpenClaw and similar tools possible.</div>
+        <div class="card-instructor">Anthropic</div>
+      </div>
+
+      <div class="card">
+        <div class="card-top">
+          <div class="card-title"><a href="https://www.oreilly.com/radar/what-openclaw-reveals-about-the-next-phase-of-ai-agents/" target="_blank">O'Reilly: The Next Phase of AI Agents</a></div>
+          <div class="card-meta"><span class="tag tag-free">FREE</span><span class="tag tag-book">ANALYSIS</span></div>
+        </div>
+        <div class="card-desc">O'Reilly's analysis of what OpenClaw reveals about the future of AI agents — proximity (running locally), creativity (skills marketplace), and extensibility (open protocols). Read this to understand where the field is heading.</div>
+        <div class="card-instructor">O'Reilly Radar</div>
+      </div>
+    </div>
+
+    <div class="milestone">
+      <div class="milestone-title">Milestone Project</div>
+      <p>Build and publish a custom OpenClaw skill that does something useful — a research assistant, a code reviewer, a data analyst. Deploy it via ClawHub. Alternatively, set up an AutoResearch pipeline for a topic you're interested in and run autonomous experiments.</p>
+    </div>
+  </div>
+
+  <!-- ============================================ -->
+  <!-- PHASE 6 (BONUS) -->
+  <!-- ============================================ -->
+  <div class="phase" data-color="pink">
+    <div class="phase-dot"></div>
+    <div class="phase-header">
+      <span class="phase-label">Bonus</span>
+      <span class="phase-title">Deeper Academic Foundations</span>
+      <span class="phase-timeline timeline-fast">Ongoing</span>
+      <span class="phase-timeline timeline-steady" style="display:none">Ongoing, alongside phases</span>
+    </div>
+    <p class="phase-desc">These are longer, more rigorous courses to weave in alongside your main path — especially valuable since your nephew is in a formal AI program.</p>
+
+    <div class="resources">
+      <div class="card">
+        <div class="card-top">
+          <div class="card-title"><a href="https://cs229.stanford.edu/" target="_blank">Stanford CS229 — Machine Learning</a></div>
+          <div class="card-meta"><span class="tag tag-free">FREE</span><span class="tag tag-video">LECTURES</span></div>
+        </div>
+        <div class="card-desc">The gold-standard ML theory course. Covers supervised/unsupervised learning, SVMs, kernel methods, EM, and RL. Free lecture videos via Stanford Engineering Everywhere. Pairs perfectly with the DL specialization.</div>
+        <div class="card-instructor">Andrew Ng — Stanford</div>
+      </div>
+
+      <div class="card">
+        <div class="card-top">
+          <div class="card-title"><a href="https://web.stanford.edu/class/cs224n/" target="_blank">Stanford CS224N — NLP with Deep Learning</a></div>
+          <div class="card-meta"><span class="tag tag-free">FREE</span><span class="tag tag-video">LECTURES</span></div>
+        </div>
+        <div class="card-desc">Full video lectures, slides, and assignments on NLP — word vectors, transformers, pretraining, question answering. Free on YouTube. The academic counterpart to the more practical Hugging Face course.</div>
+        <div class="card-instructor">Chris Manning — Stanford</div>
+      </div>
+
+      <div class="card">
+        <div class="card-top">
+          <div class="card-title"><a href="https://course.fast.ai/Lessons/part2.html" target="_blank">fast.ai Part 2 — Deep Learning Foundations to Stable Diffusion</a></div>
+          <div class="card-meta"><span class="tag tag-free">FREE</span><span class="tag tag-project">ADVANCED</span></div>
+        </div>
+        <div class="card-desc">30-hour follow-up to Practical DL. Goes deeper into the foundations — build a framework from scratch, implement diffusion models, and understand the research frontier. For when you're ready to go beyond "using" DL to "creating" new DL techniques.</div>
+        <div class="card-instructor">Jeremy Howard — fast.ai</div>
+      </div>
+
+      <div class="card">
+        <div class="card-top">
+          <div class="card-title"><a href="https://github.com/ChristosChristofidis/awesome-deep-learning" target="_blank">Awesome Deep Learning — GitHub</a></div>
+          <div class="card-meta"><span class="tag tag-free">FREE</span><span class="tag tag-book">CURATED LIST</span></div>
+        </div>
+        <div class="card-desc">A massive curated list of DL tutorials, papers, projects, and communities. Use this as your ongoing reference whenever you want to go deeper into a specific topic — computer vision, RL, generative models, etc.</div>
+        <div class="card-instructor">Community-maintained</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================ -->
+  <!-- TIPS SECTION -->
+  <!-- ============================================ -->
+  <div class="tips-section">
+    <h2>Study Tips for Success</h2>
+    <div class="tip-grid">
+      <div class="tip-card">
+        <h3>Code everything yourself</h3>
+        <p>Don't just watch lectures. Type out every line of code, break things, fix them. Karpathy's courses are designed for this — pause, code, then continue.</p>
+      </div>
+      <div class="tip-card">
+        <h3>Build a portfolio on GitHub</h3>
+        <p>Every milestone project should go on GitHub with a solid README. By Phase 5, you'll have 5+ real projects that demonstrate a complete journey from fundamentals to frontier.</p>
+      </div>
+      <div class="tip-card">
+        <h3>Read papers early</h3>
+        <p>Start reading "Attention is All You Need" during Phase 2. Use Yannic Kilcher and Umar Jamil's YouTube channels for paper walkthroughs. Reading papers is a skill — start building it now.</p>
+      </div>
+      <div class="tip-card">
+        <h3>Join communities</h3>
+        <p>fast.ai forums, LangChain Discord, Hugging Face community, r/MachineLearning, and r/LocalLLaMA. Ask questions, share projects, and learn from what others are building.</p>
+      </div>
+      <div class="tip-card">
+        <h3>Use the "two-pass" method</h3>
+        <p>Watch Ng or fast.ai first for intuition. Then watch Karpathy to build it from scratch. The concepts stick when you see them from two different angles.</p>
+      </div>
+      <div class="tip-card">
+        <h3>Stay current</h3>
+        <p>Follow Karpathy, Jim Fan, Yann LeCun, and Harrison Chase on X/Twitter. Subscribe to "The Batch" (DeepLearning.AI newsletter). The field moves fast — 15 min/day of reading keeps you in the loop.</p>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">
+  Built for an AI major starting their deep learning journey — March 2026
+</div>
+
+<script>
+  function setTimeline(mode) {
+    const btns = document.querySelectorAll('.toggle-btn');
+    btns.forEach((b, i) => {
+      b.classList.toggle('active', (mode === 'fast' && i === 0) || (mode === 'steady' && i === 1));
+    });
+    document.querySelectorAll('.timeline-fast').forEach(el => {
+      el.style.display = mode === 'fast' ? '' : 'none';
+    });
+    document.querySelectorAll('.timeline-steady').forEach(el => {
+      el.style.display = mode === 'steady' ? '' : 'none';
+    });
+  }
+</script>
+
+</body>
+</html>
